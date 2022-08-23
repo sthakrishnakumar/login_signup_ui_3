@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:login_sign_up_3/commons/app_constant.dart';
 import 'package:login_sign_up_3/commons/mixins.dart';
+import 'package:login_sign_up_3/commons/widgets.dart';
 
 import '../../commons/my_formfield.dart';
 import '../login/login_page.dart';
@@ -13,11 +16,11 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> with InputValidationMixin {
-  TextEditingController namesController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
-  TextEditingController dateController = TextEditingController();
+  late TextEditingController namesController;
+  late TextEditingController emailController;
+  late TextEditingController passwordController;
+  late TextEditingController phoneController;
+  late TextEditingController dateController;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   String dropDownValue = "Male";
   bool isHidden = true;
@@ -26,15 +29,6 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
   String? selectedGender;
   String? genderError;
   String? dateError;
-
-  List<String> gender = ["Male", "Female", "Others"];
-
-  void keyboardDismiss() {
-    FocusScopeNode currentFocus = FocusScope.of(context);
-    if (!currentFocus.hasPrimaryFocus) {
-      return currentFocus.unfocus();
-    }
-  }
 
   bool isValid = false;
 
@@ -58,6 +52,26 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
   }
 
   @override
+  void initState() {
+    namesController = TextEditingController();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+    phoneController = TextEditingController();
+    dateController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    namesController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    phoneController.dispose();
+    dateController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     final sizedBox = SizedBox(
@@ -65,16 +79,13 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
     );
 
     return GestureDetector(
-      onTap: keyboardDismiss,
+      onTap: () => keyboardDismissal(context),
       child: Scaffold(
-        appBar: AppBar(),
         body: Form(
           key: formKey,
-          // ignore: sized_box_for_whitespace
           child: ListView(
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             shrinkWrap: true,
-            // ignore: prefer_const_literals_to_create_immutables
             children: <Widget>[
               sizedBox,
               sizedBox,
@@ -229,7 +240,7 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
                     icon: const Icon(
                       Icons.arrow_drop_down,
                     ),
-                    items: gender.map((String values) {
+                    items: AppConstant.gender.map((String values) {
                       return DropdownMenuItem<String>(
                         value: values,
                         child: Text(values),
@@ -258,12 +269,7 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
                   onPressed: () {
                     validate();
                     if (isValid) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoginPage(),
-                        ),
-                      );
+                      pushReplacementNavigation(context, const LoginPage());
                     }
                   },
                   child: Padding(
@@ -274,6 +280,28 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
                     ),
                   ),
                 ),
+              ),
+              sizedBox,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Already have account?'),
+                  InkWell(
+                    onTap: () => Navigator.pushReplacement(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (context) => const LoginPage(),
+                      ),
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.only(left: 2),
+                      child: Text(
+                        'Login',
+                        style: TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

@@ -16,11 +16,25 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> with InputValidationMixin {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  late TextEditingController emailController;
+  late TextEditingController passwordController;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool isHidden = true;
   IconData icon = Icons.visibility;
+
+  @override
+  void initState() {
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +48,7 @@ class _LoginPageState extends State<LoginPage> with InputValidationMixin {
         child: Scaffold(
           body: Form(
             key: formKey,
-            // ignore: sized_box_for_whitespace
-            child: Container(
+            child: SizedBox(
               width: double.infinity,
               height: size.height,
               child: SingleChildScrollView(
@@ -145,12 +158,7 @@ class _LoginPageState extends State<LoginPage> with InputValidationMixin {
                             ),
                             InkWell(
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => SignUp(),
-                                  ),
-                                );
+                                pushReplacementNavigation(context, SignUp());
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(left: 2),

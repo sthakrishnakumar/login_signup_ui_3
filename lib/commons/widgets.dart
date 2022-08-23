@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -37,4 +38,11 @@ void keyboardDismissal(BuildContext context) {
   if (!currentFocus.hasPrimaryFocus) {
     return currentFocus.unfocus();
   }
+}
+
+void pushReplacementNavigation(BuildContext context, Widget widget) {
+  Navigator.pushReplacement(
+    context,
+    CupertinoPageRoute(builder: (context) => widget),
+  );
 }
