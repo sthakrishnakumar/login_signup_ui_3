@@ -1,7 +1,5 @@
 // ignore: import_of_legacy_library_into_null_safe
 
-
-
 // ignore: must_be_immutable
 import 'package:flutter/material.dart';
 import 'package:login_sign_up_3/commons/styles.dart';
@@ -11,16 +9,15 @@ class MyFormField extends StatelessWidget {
     Key? key,
     required this.controller,
     required this.lableText,
-    required this.errormessage,
-    required this.iconssuffix,
+    this.iconssuffix,
     required this.prefixIcon,
-    required this.obscureText,
+    this.obscureText = false,
     required this.inputType,
-    this.maxlength,
+    this.maxlength = 50,
     this.prefixtext,
-    required this.len,
     this.lengthError,
     this.suffixicon,
+    this.validator,
   }) : super(key: key);
 
   final String lableText;
@@ -28,27 +25,21 @@ class MyFormField extends StatelessWidget {
   Widget? iconssuffix;
   IconData? prefixIcon;
   bool obscureText;
-  final String errormessage;
+
   final TextInputType inputType;
   final int? maxlength;
   final String? prefixtext;
-  int len;
+
   final String? lengthError;
   IconData? suffixicon;
+  String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       maxLength: maxlength,
       keyboardType: inputType,
-      validator: (value) {
-        if (value!.isEmpty) {
-          return errormessage;
-        } else if (value.length < len) {
-          return lengthError;
-        }
-        return null;
-      },
+      validator: validator,
       controller: controller,
       obscureText: obscureText,
       decoration: InputDecoration(
@@ -89,7 +80,10 @@ class MyFormField extends StatelessWidget {
         errorStyle: kerrorTextstyle,
         labelStyle: kinputTextstyle,
         border: const OutlineInputBorder(
-          borderSide: BorderSide(width: 40.0, color: Color(0xFFFFFFFF)),
+          borderSide: BorderSide(
+            width: 40.0,
+            color: Color(0xFFFFFFFF),
+          ),
           borderRadius: BorderRadius.all(
             Radius.circular(15),
           ),

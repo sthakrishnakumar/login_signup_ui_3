@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:login_sign_up_3/commons/app_constant.dart';
+import 'package:login_sign_up_3/commons/mixins.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../commons/my_formfield.dart';
@@ -12,7 +14,7 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> with InputValidationMixin {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -54,42 +56,41 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(
                       height: size.height * 0.5,
                       child: Lottie.network(
-                          "https://assets5.lottiefiles.com/private_files/lf30_x2lzmtdl.json"),
+                        AppConstant.loginLottie,
+                      ),
                     ),
-
-                    SizedBox(
-                      height: size.height * 0.03,
-                    ),
-                    // Padding(
-                    //   padding: const EdgeInsets.only(left: 30, right: 30),
-                    //   child: EmailValidate(emailControl: emailController),
-                    // ),
                     SizedBox(
                       height: size.height * 0.03,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 30, right: 30),
                       child: MyFormField(
-                        len: 1,
+                        controller: emailController,
+                      
+                        lableText: 'Email',
+                        prefixIcon: Icons.mail_outline,
+                        inputType: TextInputType.emailAddress,
+                      ),
+                    ),
+                    SizedBox(
+                      height: size.height * 0.03,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 30, right: 30),
+                      child: MyFormField(
                         inputType: TextInputType.emailAddress,
                         obscureText: isHidden,
                         controller: passwordController,
-                        prefixIcon: Icons.mail_outline,
+                        prefixIcon: Icons.lock,
                         lableText: 'Password',
-                        errormessage: 'Please enter Password',
                         iconssuffix: InkWell(
                           onTap: () {
-                            if (isHidden == true) {
-                              isHidden = false;
-                              icon = Icons.visibility;
-                            } else {
-                              isHidden = true;
-                              icon = Icons.visibility_off;
-                            }
-                            setState(() {});
+                            setState(() {
+                              isHidden != isHidden;
+                            });
                           },
                           child: Icon(
-                            icon,
+                            isHidden ? Icons.visibility : Icons.visibility_off,
                             color: Colors.grey[400],
                           ),
                         ),
