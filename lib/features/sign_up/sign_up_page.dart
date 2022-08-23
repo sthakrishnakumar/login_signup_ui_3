@@ -1,15 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
-import 'package:login_sign_up_3/commons/app_constant.dart';
-import 'package:login_sign_up_3/commons/mixins.dart';
-import 'package:login_sign_up_3/commons/widgets.dart';
 
-import '../../commons/my_formfield.dart';
-import '../login/login_page.dart';
+import '../../commons/export.dart';
 
-// ignore: use_key_in_widget_constructors
 class SignUp extends StatefulWidget {
   @override
   _SignUpState createState() => _SignUpState();

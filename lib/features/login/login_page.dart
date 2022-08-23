@@ -1,12 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:login_sign_up_3/commons/app_constant.dart';
-import 'package:login_sign_up_3/commons/mixins.dart';
-import 'package:lottie/lottie.dart';
 
-import '../../commons/my_formfield.dart';
-import '../../commons/widgets.dart';
-import '../sign_up/sign_up_page.dart';
+
+import 'package:flutter/material.dart';
+
+import '../../commons/export.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
