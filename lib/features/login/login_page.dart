@@ -6,6 +6,7 @@ import 'package:lottie/lottie.dart';
 
 import '../../commons/my_formfield.dart';
 import '../../commons/styles.dart';
+import '../sign_up/sign_up_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -141,12 +142,12 @@ class _LoginPageState extends State<LoginPage> with InputValidationMixin {
                             ),
                             GestureDetector(
                               onTap: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) => SignUp(),
-                                //   ),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SignUp(),
+                                  ),
+                                );
                               },
                               child: Text(
                                 " Sign UP",
