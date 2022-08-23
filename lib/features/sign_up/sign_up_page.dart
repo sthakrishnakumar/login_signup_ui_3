@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:login_sign_up_3/commons/mixins.dart';
 
 import '../../commons/my_formfield.dart';
 import '../login/login_page.dart';
@@ -10,7 +11,7 @@ class SignUp extends StatefulWidget {
   _SignUpState createState() => _SignUpState();
 }
 
-class _SignUpState extends State<SignUp> {
+class _SignUpState extends State<SignUp> with InputValidationMixin {
   TextEditingController namesController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -65,7 +66,6 @@ class _SignUpState extends State<SignUp> {
               Padding(
                 padding: const EdgeInsets.only(left: 30, right: 30),
                 child: MyFormField(
-                  lengthError: "Full Name Should be atleast 6 Character Long ",
                   inputType: TextInputType.name,
                   controller: namesController,
                   lableText: "Full Name",
@@ -92,7 +92,6 @@ class _SignUpState extends State<SignUp> {
               Padding(
                 padding: const EdgeInsets.only(left: 30, right: 30),
                 child: MyFormField(
-                  lengthError: "Please Enter atleast 8 character",
                   inputType: TextInputType.emailAddress,
                   obscureText: isHidden,
                   controller: passwordController,
@@ -122,7 +121,8 @@ class _SignUpState extends State<SignUp> {
               Padding(
                 padding: const EdgeInsets.only(left: 30, right: 30),
                 child: MyFormField(
-                  lengthError: "Please Enter Correct Phone Number",
+                  validator: (phone) =>
+                      isPhoneValid(phone!) ? null : 'Invalid Phone Number',
                   prefixtext: '+977',
                   maxlength: 10,
                   inputType: TextInputType.phone,

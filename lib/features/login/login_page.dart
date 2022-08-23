@@ -5,7 +5,7 @@ import 'package:login_sign_up_3/commons/mixins.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../commons/my_formfield.dart';
-import '../../commons/styles.dart';
+import '../../commons/widgets.dart';
 import '../sign_up/sign_up_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -22,21 +22,15 @@ class _LoginPageState extends State<LoginPage> with InputValidationMixin {
   bool isHidden = true;
   IconData icon = Icons.visibility;
 
-  void keyboardDismissal() {
-    FocusScopeNode currentFocus = FocusScope.of(context);
-
-    if (!currentFocus.hasPrimaryFocus) {
-      return currentFocus.unfocus();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
+    final sizedBox = SizedBox(
+      height: size.height * 0.03,
+    );
     return SafeArea(
       child: GestureDetector(
-        onTap: keyboardDismissal,
+        onTap: () => keyboardDismissal(context),
         child: Scaffold(
           body: Form(
             key: formKey,
@@ -51,34 +45,37 @@ class _LoginPageState extends State<LoginPage> with InputValidationMixin {
                   mainAxisAlignment: MainAxisAlignment.center,
                   // ignore: prefer_const_literals_to_create_immutables
                   children: <Widget>[
-                    SizedBox(
-                      height: size.height * 0.03,
-                    ),
+                    sizedBox,
                     SizedBox(
                       height: size.height * 0.5,
                       child: Lottie.network(
                         AppConstant.loginLottie,
                       ),
                     ),
-                    SizedBox(
-                      height: size.height * 0.03,
-                    ),
+                    sizedBox,
                     Padding(
                       padding: const EdgeInsets.only(left: 30, right: 30),
                       child: MyFormField(
+                        validator: (email) {
+                          return isEmailValid(email!)
+                              ? null
+                              : "Enter Valid Email";
+                        },
                         controller: emailController,
-                      
                         lableText: 'Email',
                         prefixIcon: Icons.mail_outline,
                         inputType: TextInputType.emailAddress,
                       ),
                     ),
-                    SizedBox(
-                      height: size.height * 0.03,
-                    ),
+                    sizedBox,
                     Padding(
                       padding: const EdgeInsets.only(left: 30, right: 30),
                       child: MyFormField(
+                        validator: (password) {
+                          return isPasswordValid(password!)
+                              ? null
+                              : "Enter Valid Password";
+                        },
                         inputType: TextInputType.emailAddress,
                         obscureText: isHidden,
                         controller: passwordController,
@@ -87,7 +84,7 @@ class _LoginPageState extends State<LoginPage> with InputValidationMixin {
                         iconssuffix: InkWell(
                           onTap: () {
                             setState(() {
-                              isHidden != isHidden;
+                              isHidden = !isHidden;
                             });
                           },
                           child: Icon(
@@ -97,9 +94,7 @@ class _LoginPageState extends State<LoginPage> with InputValidationMixin {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: size.height * 0.03,
-                    ),
+                    sizedBox,
                     ElevatedButton(
                       style: ButtonStyle(
                         padding: MaterialStateProperty.all(
@@ -111,7 +106,11 @@ class _LoginPageState extends State<LoginPage> with InputValidationMixin {
                           ),
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        if (formKey.currentState!.validate()) {
+                          snackbar('Logged In Succesfully', context);
+                        }
+                      },
                       child: Padding(
                         padding: const EdgeInsets.only(top: 16, bottom: 16),
                         child: Text(
@@ -125,10 +124,14 @@ class _LoginPageState extends State<LoginPage> with InputValidationMixin {
                     ),
                     Column(
                       children: [
-                        Text(
-                          "forgot password?",
-                          style: ktextstyle,
-                          textAlign: TextAlign.right,
+                        InkWell(
+                          onTap: () => snackbar(
+                              'Redirect to Forgot Password Page', context),
+                          child: Text(
+                            "Forgot password?",
+                            style: ktextstyle,
+                            textAlign: TextAlign.right,
+                          ),
                         ),
                         SizedBox(
                           height: size.height * 0.01,
@@ -140,7 +143,7 @@ class _LoginPageState extends State<LoginPage> with InputValidationMixin {
                               "Don't have account?",
                               style: ktextstyle,
                             ),
-                            GestureDetector(
+                            InkWell(
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -149,13 +152,19 @@ class _LoginPageState extends State<LoginPage> with InputValidationMixin {
                                   ),
                                 );
                               },
-                              child: Text(
-                                " Sign UP",
-                                style: ktextstyle.copyWith(
-                                    fontWeight: FontWeight.w900),
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 2),
+                                child: Text(
+                                  "Sign UP",
+                                  style: ktextstyle.copyWith(
+                                      fontWeight: FontWeight.w900),
+                                ),
                               ),
                             ),
                           ],
+                        ),
+                        SizedBox(
+                          height: size.height * 0.01,
                         ),
                       ],
                     ),

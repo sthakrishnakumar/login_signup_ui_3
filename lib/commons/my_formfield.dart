@@ -2,7 +2,7 @@
 
 // ignore: must_be_immutable
 import 'package:flutter/material.dart';
-import 'package:login_sign_up_3/commons/styles.dart';
+import 'package:login_sign_up_3/commons/widgets.dart';
 
 class MyFormField extends StatelessWidget {
   MyFormField({
@@ -15,8 +15,6 @@ class MyFormField extends StatelessWidget {
     required this.inputType,
     this.maxlength = 50,
     this.prefixtext,
-    this.lengthError,
-    this.suffixicon,
     this.validator,
   }) : super(key: key);
 
@@ -30,8 +28,6 @@ class MyFormField extends StatelessWidget {
   final int? maxlength;
   final String? prefixtext;
 
-  final String? lengthError;
-  IconData? suffixicon;
   String? Function(String?)? validator;
 
   @override
@@ -46,7 +42,7 @@ class MyFormField extends StatelessWidget {
         counterText: "",
         prefixText: prefixtext,
         isDense: true,
-        contentPadding: const EdgeInsets.all(10),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 10),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(
@@ -70,24 +66,16 @@ class MyFormField extends StatelessWidget {
           color: Colors.grey[400],
           size: 18,
         ),
-        suffixIcon: Icon(
-          suffixicon,
-          color: Colors.grey[400],
-          size: 18,
+        suffix: Padding(
+          padding: const EdgeInsets.only(
+            right: 10,
+          ),
+          child: iconssuffix,
         ),
-        suffix: iconssuffix,
         labelText: lableText,
         errorStyle: kerrorTextstyle,
         labelStyle: kinputTextstyle,
-        border: const OutlineInputBorder(
-          borderSide: BorderSide(
-            width: 40.0,
-            color: Color(0xFFFFFFFF),
-          ),
-          borderRadius: BorderRadius.all(
-            Radius.circular(15),
-          ),
-        ),
+        border: kborderStyle,
       ),
     );
   }
