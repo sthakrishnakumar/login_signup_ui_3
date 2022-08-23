@@ -2,6 +2,7 @@
 
 // ignore: must_be_immutable
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:login_sign_up_3/commons/widgets.dart';
 
 class MyFormField extends StatelessWidget {
@@ -10,12 +11,15 @@ class MyFormField extends StatelessWidget {
     required this.controller,
     required this.lableText,
     this.iconssuffix,
-    required this.prefixIcon,
+    this.prefixIcon,
     this.obscureText = false,
-    required this.inputType,
+    this.inputType = TextInputType.emailAddress,
     this.maxlength = 50,
     this.prefixtext,
     this.validator,
+    this.isEnabled = true,
+    this.dateError,
+    this.isDate = false,
   }) : super(key: key);
 
   final String lableText;
@@ -29,10 +33,15 @@ class MyFormField extends StatelessWidget {
   final String? prefixtext;
 
   String? Function(String?)? validator;
+  bool isEnabled;
+
+  String? dateError;
+  bool isDate;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      enabled: isEnabled,
       maxLength: maxlength,
       keyboardType: inputType,
       validator: validator,
@@ -61,6 +70,12 @@ class MyFormField extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(color: Colors.grey[500]!, width: 0.5),
         ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: dateError == null
+              ? BorderSide(color: Colors.grey[500]!, width: 0.5)
+              : const BorderSide(color: Colors.red, width: 1),
+        ),
         prefixIcon: Icon(
           prefixIcon,
           color: Colors.grey[400],
@@ -74,7 +89,12 @@ class MyFormField extends StatelessWidget {
         ),
         labelText: lableText,
         errorStyle: kerrorTextstyle,
-        labelStyle: kinputTextstyle,
+        labelStyle: isDate
+            ? GoogleFonts.poppins(
+                color: Colors.red,
+                fontSize: 12,
+              )
+            : kinputTextstyle,
         border: kborderStyle,
       ),
     );

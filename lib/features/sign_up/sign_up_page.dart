@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:login_sign_up_3/commons/mixins.dart';
 
 import '../../commons/my_formfield.dart';
@@ -21,7 +22,10 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
   String dropDownValue = "Male";
   bool isHidden = true;
   IconData icon = Icons.visibility;
+  DateTime? selected;
   String? selectedGender;
+  String? genderError;
+  String? dateError;
 
   List<String> gender = ["Male", "Female", "Others"];
 
@@ -32,13 +36,38 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
     }
   }
 
+  bool isValid = false;
+
+  validate() {
+    setState(() {
+      isValid = formKey.currentState!.validate();
+    });
+
+    if (selectedGender == null) {
+      setState(() {
+        genderError = 'Error';
+      });
+      isValid = false;
+    }
+    if (selected == null) {
+      setState(() {
+        dateError = 'Error Date';
+      });
+      isValid = false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final sizedBox = SizedBox(
+      height: size.height * .03,
+    );
 
     return GestureDetector(
       onTap: keyboardDismiss,
       child: Scaffold(
+        appBar: AppBar(),
         body: Form(
           key: formKey,
           // ignore: sized_box_for_whitespace
@@ -47,9 +76,8 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
             shrinkWrap: true,
             // ignore: prefer_const_literals_to_create_immutables
             children: <Widget>[
-              SizedBox(
-                height: size.height * .04,
-              ),
+              sizedBox,
+              sizedBox,
               const Padding(
                 padding: EdgeInsets.only(left: 30, right: 30),
                 child: Text(
@@ -66,6 +94,8 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
               Padding(
                 padding: const EdgeInsets.only(left: 30, right: 30),
                 child: MyFormField(
+                  validator: (name) =>
+                      isNameValid(name!) ? null : "Enter Valid Name",
                   inputType: TextInputType.name,
                   controller: namesController,
                   lableText: "Full Name",
@@ -74,24 +104,25 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
                   iconssuffix: null,
                 ),
               ),
-              SizedBox(
-                height: size.height * .04,
-              ),
+              sizedBox,
               Padding(
                 padding: const EdgeInsets.only(left: 30, right: 30),
                 child: MyFormField(
+                  validator: (email) =>
+                      isEmailValid(email!) ? null : "Enter Valid Email",
                   controller: emailController,
                   lableText: 'Email',
                   prefixIcon: Icons.mail_outline,
                   inputType: TextInputType.emailAddress,
                 ),
               ),
-              SizedBox(
-                height: size.height * .04,
-              ),
+              sizedBox,
               Padding(
                 padding: const EdgeInsets.only(left: 30, right: 30),
                 child: MyFormField(
+                  validator: (password) => isPasswordValid(password!)
+                      ? null
+                      : "Enter Valid Password",
                   inputType: TextInputType.emailAddress,
                   obscureText: isHidden,
                   controller: passwordController,
@@ -115,9 +146,7 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
                   ),
                 ),
               ),
-              SizedBox(
-                height: size.height * .04,
-              ),
+              sizedBox,
               Padding(
                 padding: const EdgeInsets.only(left: 30, right: 30),
                 child: MyFormField(
@@ -133,70 +162,68 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
                   iconssuffix: null,
                 ),
               ),
-              SizedBox(
-                height: size.height * .04,
+              sizedBox,
+              Padding(
+                padding: const EdgeInsets.only(left: 30, right: 30),
+                child: InkWell(
+                  onTap: () async {
+                    selected = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(1964),
+                        lastDate: DateTime.now(),
+                        builder: (context, child) {
+                          return Theme(
+                            data: Theme.of(context).copyWith(
+                              colorScheme: const ColorScheme.light(
+                                primary: Colors.green,
+                              ),
+                            ),
+                            child: child!,
+                          );
+                        });
+                    final myDate = DateFormat('d MMM y').format(selected!);
+                    setState(() {
+                      dateController.text = myDate;
+                      dateError = null;
+                    });
+                  },
+                  child: MyFormField(
+                    dateError: dateError,
+                    isDate: dateError == null ? false : true,
+                    prefixIcon: Icons.calendar_month,
+                    controller: dateController,
+                    lableText: dateError == null
+                        ? 'Date of Birth'
+                        : 'Please Select DOB',
+                    isEnabled: false,
+                  ),
+                ),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.only(left: 30, right: 30),
-              //   child: DateTimeFormField(
-              //     decoration: InputDecoration(
-              //       contentPadding: const EdgeInsets.all(10),
-              //       hintStyle: TextStyle(color: Colors.grey[500]),
-              //       errorStyle: const TextStyle(color: Colors.redAccent),
-              //       prefixIcon: const SizedBox(),
-              //       suffixIcon: Icon(Icons.calendar_today,
-              //           color: Colors.grey[400], size: 18),
-              //       labelText: 'Date Of Birth',
-              //       enabledBorder: OutlineInputBorder(
-              //         borderRadius: BorderRadius.circular(15),
-              //         borderSide:
-              //             BorderSide(color: Colors.grey[500]!, width: 0.5),
-              //       ),
-              //       labelStyle: kinputTextstyle,
-              //       focusedBorder: OutlineInputBorder(
-              //         borderRadius: BorderRadius.circular(15),
-              //         borderSide: BorderSide(
-              //           color: Colors.blue[500]!,
-              //           width: 0.5,
-              //         ),
-              //       ),
-              //       errorBorder: OutlineInputBorder(
-              //         borderRadius: BorderRadius.circular(15),
-              //         borderSide: const BorderSide(
-              //           color: Colors.red,
-              //           width: 1,
-              //         ),
-              //       ),
-              //     ),
-              //     mode: DateTimeFieldPickerMode.date,
-              //     autovalidateMode: AutovalidateMode.onUserInteraction,
-              //     validator: (e) =>
-              //         e?.day == null ? 'Please Choose a Date' : null,
-              //     onDateSelected: (DateTime value) {
-              //       // ignore: avoid_print
-              //       print(value);
-              //     },
-              //   ),
-              // ),
-
-              SizedBox(
-                height: size.height * .04,
-              ),
-
+              sizedBox,
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 30),
                 padding: const EdgeInsets.all(10),
-                height: 50,
+                height: size.height * 0.055,
                 decoration: BoxDecoration(
-                  border: Border.all(width: 0.5, color: Colors.grey[400]!),
+                  border: Border.all(
+                    width: genderError == null ? 0.5 : 1.0,
+                    color: genderError == null ? Colors.grey[400]! : Colors.red,
+                  ),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
-                    hint: Text(
-                      'Select Gender',
-                      style: GoogleFonts.poppins(fontSize: 13),
-                    ),
+                    hint: genderError == null
+                        ? Text(
+                            'Select Gender',
+                            style: GoogleFonts.poppins(fontSize: 13),
+                          )
+                        : Text(
+                            'Please Select Gender',
+                            style: GoogleFonts.poppins(
+                                fontSize: 10, color: Colors.red),
+                          ),
                     isExpanded: true,
                     value: selectedGender,
                     icon: const Icon(
@@ -211,14 +238,13 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
                     onChanged: (gender) {
                       setState(() {
                         selectedGender = gender;
+                        genderError = null;
                       });
                     },
                   ),
                 ),
               ),
-              SizedBox(
-                height: size.height * .04,
-              ),
+              sizedBox,
               Padding(
                 padding: const EdgeInsets.only(left: 25, right: 25),
                 child: ElevatedButton(
@@ -230,7 +256,8 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
                     ),
                   ),
                   onPressed: () {
-                    if (formKey.currentState!.validate()) {
+                    validate();
+                    if (isValid) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -240,11 +267,12 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
                     }
                   },
                   child: Padding(
-                      padding: const EdgeInsets.only(top: 16, bottom: 16),
-                      child: Text(
-                        "Sign UP",
-                        style: GoogleFonts.poppins(fontSize: 13),
-                      )),
+                    padding: const EdgeInsets.only(top: 16, bottom: 16),
+                    child: Text(
+                      "Sign UP",
+                      style: GoogleFonts.poppins(fontSize: 13),
+                    ),
+                  ),
                 ),
               ),
             ],
